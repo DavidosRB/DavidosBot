@@ -33,22 +33,23 @@ async def event_ready():
 async def event_message(ctx):
     'Runs every time a message is sent in chat.'
 
-    # make sure the bot ignores itself and the streamer
-    if ctx.author.name.lower() == os.environ['BOT_NICK'].lower():
+    # make sure the bot ignores itself
+    # NOTE: The bot doesn't seem to recognize itself as a ctx.author, only real users, so the second check seems to fail. That's why I implemented "if not ctx.author" to  check if there even is a valid author first (second check is then unnecessary I guess)
+    if not ctx.author or str(object=ctx.author.name).lower() == os.environ['BOT_NICK'].lower():
         return
     
     # Get the content of the chat message and convert it to lower case
     chat_message: str = ctx.content.lower()
-    # If the chat message contains "ich bin", respond with a silly message referencing to them by the next word
-    if "ich bin" in chat_message:
+    # If the chat message contains "ich bin ", respond with a silly message referencing to them by the next word
+    if "ich bin " in chat_message:
         # First, split the message into words
         split_words: list[str] = chat_message.split()
         # Then, get the index of the first occurrence of (ich) "bin"
         index: int = split_words.index("bin")
-        # Finally, get the next word after "bin" (the supposed name) and respond with a message
+        # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
         next_word: str = split_words[index+1]
 
-        await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
+        await ctx.channel.send(f'Hi {next_word.capitalize()}, ich bin DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
