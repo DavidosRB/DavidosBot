@@ -79,5 +79,14 @@ async def play_sound(ctx, sound: str):
     # Also notify the chat that the sound is playing/was played
     await ctx.send(f'Playing sound {sound}.')
 
+@bot.command(name='sounds')
+async def list_sounds(ctx):
+    # Return a list of sounds by listing all files in the sounds folder
+    sounds: list[str] = os.listdir(path='sounds')
+    # Remove the file extension from each sound
+    sounds = [sound.split(sep='.')[0] for sound in sounds]
+    # Send the list of sounds to the chat
+    await ctx.send(f'Verfügbare Sounds: {", ".join(sounds)}')
+
 if __name__ == "__main__":
     bot.run()
