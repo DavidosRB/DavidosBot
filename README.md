@@ -16,6 +16,10 @@ Wählt einen von 10 Planeten und antworten mit einem kurzen Text über einen ima
 Zeigt eine kurze Info über den Bot an
 - `?commands`
 Zeigt eine Liste an Commands und verlinkt zu diesem README (momentan noch hard-coded)
+- `?playsound`
+Spielt einen Sound für die Person ab, die den Bot gestartet hat (auf der lokalen Maschine). Momentan nur verfügbar für Mods. Verfügbare [Sounds](sounds/): "dietassekaffe", "heylisten", "meow", "poyo", "uiiai", "yippiee"
+- `?sounds`
+Schreibt eine Auflistung an allen verfügbaren Sounds in den Chat, basierend auf allen Sounds im [Sounds Ordner](sounds/)
 
 Und hoffentlich bald mehr! Ich geh gerne wild mit den commands hehe :3
 
