@@ -16,10 +16,12 @@ Wählt einen von 10 Planeten und antworten mit einem kurzen Text über einen ima
 Zeigt eine kurze Info über den Bot an
 - `?commands`
 Zeigt eine Liste an Commands und verlinkt zu diesem README (momentan noch hard-coded)
-- `?playsound`
-Spielt einen Sound für die Person ab, die den Bot gestartet hat (auf der lokalen Maschine). Momentan nur verfügbar für Mods. Verfügbare [Sounds](sounds/): "dietassekaffe", "heylisten", "meow", "poyo", "uiiai", "yippiee"
+- `?playsound (sound)`
+Spielt einen Sound für die Person ab, die den Bot gestartet hat (auf der lokalen Maschine). Momentan nur verfügbar für Mods. Verfügbare Sounds sieht man entweder im [Sounds Ordner](sounds/) oder via dem Command `?sounds`
 - `?sounds`
 Schreibt eine Auflistung an allen verfügbaren Sounds in den Chat, basierend auf allen Sounds im [Sounds Ordner](sounds/)
+- `randompoints (user) (maximum)`
+Generiert eine zufällige Nummer zwischen 0 und dem gegebenen Maximum und schickt einen Command an StreamElements, um dem User die zufällig gewürfelte Zahl als Loyalty Points hinzufügt
 
 Und hoffentlich bald mehr! Ich geh gerne wild mit den commands hehe :3
 
