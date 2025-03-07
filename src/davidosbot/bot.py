@@ -2,6 +2,8 @@ import os
 from twitchio.ext import commands
 from dotenv import load_dotenv
 from random import choice
+from playsound import playsound
+import asyncio
 
 # load token etc. from .env-file
 load_dotenv()
@@ -54,6 +56,24 @@ async def commands(ctx):
 async def multiply(ctx, number1: int, number2: int):
     result: int = number1 * number2
     await ctx.send(f'{number1} * {number2} = {result}')
+
+@bot.command(name='playsound')
+async def play_sound(ctx, sound: str):
+    # Convert the given sound to lower case to avoid case sensitivity
+    sound = sound.lower()
+    # Convert the sound to a file path using os and the sounds folder
+    file_path: str = os.path.join('sounds', f'{sound}.mp3')
+    # Check if the file actually exists and if not, send a message to the chat
+    if not os.path.exists(file_path):
+        await ctx.send(f'Sound {sound} not found. Please try again.')
+        # Return to terminate the function call before trying to play the sound
+        return
+    
+    # Run playsound in a separate thread to prevent blocking (otherwise we get runtime errors and the sound doesn't play)
+    await asyncio.to_thread(playsound, file_path)
+
+    # Also notify the chat that the sound is playing/was played
+    await ctx.send(f'Playing sound {sound}.')
 
 if __name__ == "__main__":
     bot.run()
