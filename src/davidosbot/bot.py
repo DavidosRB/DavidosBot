@@ -52,11 +52,13 @@ async def commands(ctx):
     await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randomwaffeln und ein paar secret commands hehe')
 
 @bot.command(name='playsound')
-async def play_sound(ctx, sound: str):
+async def play_sound(ctx, sound: str = "Nichts"):
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
     if not ctx.author.is_mod:
         await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
         return
+    if sound == "Nichts":
+        await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
     # Convert the given sound to lower case to avoid case sensitivity
     sound = sound.lower()
     # Convert the sound to a file path using os and the sounds folder
