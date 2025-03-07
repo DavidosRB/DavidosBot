@@ -95,8 +95,8 @@ async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
         await ctx.send(f'Bitte gib einen User an, dem die Reiswaffeln gegeben werden sollen')
         return
     # If the maximum number of Reiswaffeln is the default value of 100
-    if maximum == 100:
-        await ctx.send(f'Es wurde keine Maximale Anzahl an Reiswaffeln angegeben. Standardmäßig wird eine maximale Anzahl von 100 Reiswaffeln vergeben.')
+    # if maximum == 100:
+    #     await ctx.send(f'Es wurde keine Maximale Anzahl an Reiswaffeln angegeben. Standardmäßig wird eine maximale Anzahl von 100 Reiswaffeln vergeben.')
     # Generate a random number of points between 0 and the given maximum
     points = randint(a=0, b=maximum)
     # Notify the chat about the random number of Reiswaffeln
