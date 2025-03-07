@@ -83,11 +83,18 @@ async def list_sounds(ctx):
     await ctx.send(f'Verfügbare Sounds: {", ".join(sounds)}')
 
 @bot.command(name='randompoints')
-async def random_waffeln(ctx, user: str, maximum: int):
+async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
     if not ctx.author.is_mod:
         await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
         return
+    # If no username was entered (default value is "davidosbot") or the username is the bot itself, send a message to the chat
+    if user == "davidosbot":
+        await ctx.send(f'Bitte gib einen User an, dem die Reiswaffeln gegeben werden sollen')
+        return
+    # If the maximum number of Reiswaffeln is the default value of 100
+    if maximum == 100:
+        await ctx.send(f'Es wurde keine Maximale Anzahl an Reiswaffeln angegeben. Standardmäßig wird eine maximale Anzahl von 100 Reiswaffeln vergeben.')
     # Generate a random number of points between 0 and the given maximum
     points = randint(a=0, b=maximum)
     # Notify the chat about the random number of Reiswaffeln
