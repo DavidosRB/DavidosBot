@@ -1,0 +1,19 @@
+[project]
+name = "DavidosBot"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "David Buchmann", email = "david@david-buchmann.de"},
+]
+dependencies = ["twitchio>=2.10.0"]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
