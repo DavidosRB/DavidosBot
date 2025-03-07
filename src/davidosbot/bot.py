@@ -59,6 +59,10 @@ async def multiply(ctx, number1: int, number2: int):
 
 @bot.command(name='playsound')
 async def play_sound(ctx, sound: str):
+    # Check if the user is a Mod (Allow only Mods to play sounds for now)
+    if not ctx.author.is_mod:
+        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+        return
     # Convert the given sound to lower case to avoid case sensitivity
     sound = sound.lower()
     # Convert the sound to a file path using os and the sounds folder
