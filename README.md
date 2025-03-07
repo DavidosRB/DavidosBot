@@ -20,10 +20,12 @@ Zeigt eine Liste an Commands und verlinkt zu diesem README (momentan noch hard-c
 Spielt einen Sound für die Person ab, die den Bot gestartet hat (auf der lokalen Maschine). Momentan nur verfügbar für Mods. Verfügbare Sounds sieht man entweder im [Sounds Ordner](sounds/) oder via dem Command `?sounds`
 - `?sounds`
 Schreibt eine Auflistung an allen verfügbaren Sounds in den Chat, basierend auf allen Sounds im [Sounds Ordner](sounds/)
-- `randompoints (user) (maximum)`
+- `?randompoints (user) (maximum)`
 Generiert eine zufällige Nummer zwischen 0 und dem gegebenen Maximum und schickt einen Command an StreamElements, um dem User die zufällig gewürfelte Zahl als Loyalty Points hinzufügt
+- `?byebye`
+Ein Command, um den Bot sauber und einfach aus dem Chat zu entfernen und das lokale Skript zu stoppen. Nie wieder mit Ctrl+C forcefully stoppen!
 
-Und hoffentlich bald mehr! Ich geh gerne wild mit den commands hehe :3
+Und ein paar geheime Funktionen & hoffentlich bald mehr! Ich geh gerne wild mit den commands hehe :3
 
 ## Usage
 An sich funktioniert der Bot auch außerhalb von meiner Environment. Er benötigt jedoch ein `.env` file im base folder, um zu funktionieren und muss in einem Environment mit TwitchIO und python-dotenv gestartet werden. Ich habe dieses Projekt absichtlich mit der `pdm` Library initialisiert, damit es auch außerhalb meiner lokalen Maschine benutzt werden kann.
