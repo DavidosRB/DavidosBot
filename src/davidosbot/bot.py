@@ -20,7 +20,7 @@ bot = commands.Bot(
 # Notify when bot is connected
 @bot.event
 async def event_ready():
-    """Called once when the bot goes online."""
+    'Called once when the bot goes online.'
     print(f"{os.environ['BOT_NICK']} is online!")
     ws = bot._ws  # this is only needed to send messages within event_ready
     await ws.send_privmsg(os.environ['CHANNEL'], f"/me has landed!")
@@ -40,6 +40,20 @@ async def rnbcat(ctx):
 
     planet: str = choice(seq=planeten)
     await ctx.send(planet)
+    
+@bot.command(name='help')
+async def help(ctx):
+    await ctx.send('DavidosBot ist ein kleiner aber feiner, manuell kreierter und gestarteter ChatBot für Custom Commands (siehe ?commands). Gebt Bescheid, wenn ihr mehr Commands sehen wollt! Erstellt von DavidosB, am 07.03.2025')
+
+@bot.command(name='commands')
+async def commands(ctx):
+    await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help und auch nochmal hier verfügbar: https://github.com/David-R-Buchmann/DavidosBot?tab=readme-ov-file#commands')
+
+# Just to show how arguments after the initial command name work
+@bot.command(name='multiply')
+async def multiply10(ctx, number1: int, number2: int):
+    result: int = number1 * number2
+    await ctx.send(f'{number1} * {number2} = {result}')
 
 if __name__ == "__main__":
     bot.run()
