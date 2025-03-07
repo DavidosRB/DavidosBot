@@ -5,6 +5,8 @@ from random import choice, randint
 from playsound import playsound
 import asyncio
 
+from twitchio.websocket import WSConnection
+
 # load token etc. from .env-file
 load_dotenv()
 
@@ -18,12 +20,35 @@ bot = commands.Bot(
 )
 
 # Notify when bot is connected (doesn't seem to work right now)
-@bot.event
+@bot.event()
 async def event_ready():
-    'Called once when the bot goes online.'
-    print(f"{os.environ['BOT_NICK']} is online!")
-    ws = bot._ws  # this is only needed to send messages within event_ready
-    await ws.send_privmsg(os.environ['CHANNEL'], f"/me has landed!")
+    """Called once when the bot goes online."""
+    # Ensure bot is connected before sending messages
+    if bot.connected_channels:
+        await bot.connected_channels[0].send(content="/me has landed!")
+    else:
+        print("Bot is not connected to any channel yet!")
+
+@bot.event()
+async def event_message(ctx):
+    'Runs every time a message is sent in chat.'
+
+    # make sure the bot ignores itself and the streamer
+    if ctx.author.name.lower() == os.environ['BOT_NICK'].lower():
+        return
+    
+    # Get the content of the chat message and convert it to lower case
+    chat_message: str = ctx.content.lower()
+    # If the chat message contains "ich bin", respond with a silly message referencing to them by the next word
+    if "ich bin" in chat_message:
+        # First, split the message into words
+        split_words: list[str] = chat_message.split()
+        # Then, get the index of the first occurrence of (ich) "bin"
+        index: int = split_words.index("bin")
+        # Finally, get the next word after "bin" (the supposed name) and respond with a message
+        next_word: str = split_words[index+1]
+
+        await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
@@ -73,7 +98,7 @@ async def play_sound(ctx, sound: str = "Nichts"):
     await asyncio.to_thread(playsound, file_path)
 
     # Also notify the chat that the sound is playing/was played
-    await ctx.send(f'Sound {sound} wird abgespielt.')
+    await ctx.send(f'Sound {sound} wurde abgespielt.')
 
 @bot.command(name='sounds')
 async def list_sounds(ctx):
