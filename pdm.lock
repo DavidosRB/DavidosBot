@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:4a8ed8c5efd3c23fa00d380f306d733956b163ea25aaa8e765c2d2469b945ad9"
+content_hash = "sha256:fc5fb54d68563f368bb9cb5a818c54b7280b4dc3d21f2217934f0841ca159071"
 
 [[metadata.targets]]
 requires_python = ">=3.11"
@@ -249,6 +249,15 @@ files = [
     {file = "multidict-6.1.0-cp313-cp313-win_amd64.whl", hash = "sha256:e9aa71e15d9d9beaad2c6b9319edcdc0a49a43ef5c0a4c8265ca9ee7d6c67774"},
     {file = "multidict-6.1.0-py3-none-any.whl", hash = "sha256:48e171e52d1c4d33888e529b999e5900356b9ae588c2f09a52dcefb158b27506"},
     {file = "multidict-6.1.0.tar.gz", hash = "sha256:22ae2ebf9b0c69d206c003e2f6a914ea33f0a932d4aa16f236afc049d9958f4a"},
+]
+
+[[package]]
+name = "playsound"
+version = "1.2.2"
+summary = "Pure Python, cross platform, single function module with no dependencies for playing sounds."
+groups = ["default"]
+files = [
+    {file = "playsound-1.2.2-py2.py3-none-any.whl", hash = "sha256:1e83750a5325cbccee03d6e751ba3e78c037ac95b95a3ba1f38d0c5aca9e1a34"},
 ]
 
 [[package]]

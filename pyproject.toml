@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "David Buchmann", email = "david@david-buchmann.de"},
 ]
-dependencies = ["twitchio>=2.10.0", "python-dotenv>=1.0.1"]
+dependencies = ["twitchio>=2.10.0", "python-dotenv>=1.0.1", "playsound==1.2.2"]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
