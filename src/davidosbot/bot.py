@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from random import choice, randint
 from playsound import playsound
 import asyncio
-
-from twitchio.websocket import WSConnection
+import signal
+from sys import exit as sys_exit
 
 # load token etc. from .env-file
 load_dotenv()
@@ -19,16 +19,18 @@ bot = commands.Bot(
     initial_channels=[os.environ['CHANNEL']]
 )
 
-# Notify when bot is connected (doesn't seem to work right now)
+# Notify when bot is connected
 @bot.event()
 async def event_ready():
     """Called once when the bot goes online."""
     # Ensure bot is connected before sending messages
     if bot.connected_channels:
-        await bot.connected_channels[0].send(content="/me has landed!")
+        await bot.connected_channels[0].send(content="/me is gerade gelandet! Sagt Hallo :3")
     else:
         print("Bot is not connected to any channel yet!")
 
+# Check every single message
+# Currently responds to "ich bin " with a silly little message
 @bot.event()
 async def event_message(ctx):
     'Runs every time a message is sent in chat.'
@@ -118,11 +120,12 @@ async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
         return
     # If no username was entered (default value is "davidosbot") or the username is the bot itself, send a message to the chat
     if user == "davidosbot":
-        await ctx.send(f'Bitte gib einen User an, dem die Reiswaffeln gegeben werden sollen')
+        await ctx.send(f'Bitte gib einen User an, dem die Punkte gegeben werden sollen')
         return
     # If the maximum number of Reiswaffeln is the default value of 100
     # if maximum == 100:
     #     await ctx.send(f'Es wurde keine Maximale Anzahl an Reiswaffeln angegeben. Standardmäßig wird eine maximale Anzahl von 100 Reiswaffeln vergeben.')
+
     # Generate a random number of points between 0 and the given maximum
     points = randint(a=0, b=maximum)
     # Notify the chat about the random number of Reiswaffeln
@@ -139,6 +142,24 @@ async def henry(ctx):
     # Else send the quote directly
     else: 
         await ctx.send('#7: "An sich sind wir schon Pro-Mobbing in unserem Chat" ~Henry, 14.02.2025')
+
+@bot.command(name='byebye')
+async def byebye(ctx):
+    # Check if the user is a Mod (Allow only Mods to play sounds for now)
+    if not ctx.author.is_mod:
+        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+        return
+    # Send a goodbye message to the twitch chat and disconnect
+    await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
+    await ctx.send('/disconnect')
+    # Small delay to ensure message is sent before disconnecting (and to prevent runtime errors)
+    await asyncio.sleep(delay=1)  
+    # Properly close the bot
+    await bot.close() 
+    
+    # Stop the event loop cleanly
+    loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
+    loop.stop()
 
 if __name__ == "__main__":
     bot.run()
