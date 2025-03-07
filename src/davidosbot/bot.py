@@ -51,7 +51,7 @@ async def commands(ctx):
 
 # Just to show how arguments after the initial command name work
 @bot.command(name='multiply')
-async def multiply10(ctx, number1: int, number2: int):
+async def multiply(ctx, number1: int, number2: int):
     result: int = number1 * number2
     await ctx.send(f'{number1} * {number2} = {result}')
 
