@@ -77,14 +77,14 @@ async def help(ctx):
 # List all currently available commands (hardcoded)
 @bot.command(name='commands')
 async def commands(ctx):
-    await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randomwaffeln und ein paar secret commands hehe')
+    await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements und ein paar secret commands hehe')
 
 @bot.command(name='playsound')
 async def play_sound(ctx, sound: str = "Nichts"):
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
-    if not ctx.author.is_mod:
-        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
-        return
+    # if not ctx.author.is_mod:
+    #     await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+    #     return
     if sound == "Nichts":
         await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
         return
@@ -185,14 +185,37 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
             return
     # Also check if the given appid is an actual ID (integer)
     if not isinstance(appid, int) and appid != "None":
+        # First, get the full game name by manipulating the message string to get everything from the third word onwards (after "?getachievements <steam_id>")
+        game_name: list = " ".join(ctx.message.content.split()[2:])
         # Check the known games dictionary for the given game name
         known_games: dict = ast.literal_eval(os.environ["KNOWN_GAMES"])
         if appid.lower() in known_games.keys():
             appid = known_games[appid.lower()]
-            # await ctx.send(f"Game {appid} wurde gefunden.")
+
+        # If the given game name cannot be found in the known games, we query the steam store instead
         else:
-            await ctx.send(f"Game {appid} wurde nicht gefunden. Verfügbare Games: {', '.join(known_games.keys())}")
-            return
+            # Get the URL to the steam store and set the term as the given game name (with cc as US and language as english)
+            url: str = f"https://store.steampowered.com/api/storesearch/&cc=US&l=en"
+            params: dict[str, str] = {
+                "term": game_name,
+                "cc": "US",
+                "l": "en"
+            }
+            response: requests.Response = requests.get(url=url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                # Get the name and App ID of the FIRST found item (best match, can sometimes be a different game than queried, like Hades 2 instead of Hades)
+                try:
+                    best_match = data["items"][0]
+                except:
+                    await ctx.send(f"Konnte kein Spiel mit dem Namen {game_name} finden.")
+                    raise Exception(f"Couldn't find any game using the search term {game_name}.")
+                app_name: str = best_match["name"]
+                appid: int = best_match["id"] # Using this appid, we can now query the achievements below
+            # If the request doesnt work, send an error message
+            else:
+                raise Exception(f"Failed to fetch user request for App {appid}.")
+
     # Get user stats from Steam API using the GetPlayerAchievements API from ISteamUserStats
     url = f"http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/"
     params = {
@@ -203,14 +226,23 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     # Send the request to the steam API
     response: requests.Response = requests.get(url, params=params)
     achievement_data = response.json()
+
+    # Try accessing the achievements stat in the achievement data
+    try:
+        achievements = achievement_data["playerstats"]["achievements"]
+    # If this leads to an error, notify the user that the given game seems to not have any achievements
+    except:
+        await ctx.send(f"Das Spiel {app_name} scheint keine Achievements zu haben.")
+
+    # If achievements could be found, iterate over every achievement and count it as gotten if it has been achieved ("achieved": 1) and as missing if it hasn't
     achievements_gotten = 0
     achievements_missing = 0
-    achievements = achievement_data["playerstats"]["achievements"]
     for achievement in achievements:
         if achievement["achieved"] == 1:
             achievements_gotten += 1
         else:
             achievements_missing += 1
+    
     # Get the users name using the GetPlayerSummaries API from ISteamUser
     url: str = f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
     params: dict[str, str] = {
@@ -218,15 +250,43 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
         "steamids": os.environ['STEAM_ID'],
     }
     response: requests.Response = requests.get(url=url, params=params)
+    # If the user can be found, get his name by accessing the response, first found player and their Persona Name
     if response.status_code == 200:
         user_data = response.json()
         # Get the user's name
         user_name = user_data["response"]["players"][0]["personaname"]
+    # If the request fails, send a short error message and return
     else:
-        # print("Returning None")
         await ctx.send("Failed to fetch user summary.")
+        return
 
-    await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
+    # If everything succeeds, send a message to the chat for the amount of achievements the given user has achieved for the given game
+    await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} bisher {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
+
+# A separate command from getachievements to get only an App ID (completely optional and only used in getachievements so far)
+@bot.command(name='getappid')
+async def get_appid(ctx):
+    # Get the full message from the context's message content
+    full_message = ctx.message.content
+    # Manipulate the string to get all words after the first one (which is the command "?getappid" itself)
+    game_name: list = full_message.split()[1:]
+    game_name = " ".join(game_name)
+    # Then, query the steam story using this game's name as term
+    url: str = f"https://store.steampowered.com/api/storesearch/&cc=US&l=en"
+    params: dict[str, str] = {
+        "term": game_name,
+        "cc": "US",
+        "l": "en"
+    }
+    response: requests.Response = requests.get(url=url, params=params)
+    # If the response work, get the app ID from the data and send the chat a fitting message
+    if response.status_code == 200:
+        data = response.json()
+        app_name: str = data["items"][0]["name"]
+        app_id: int = data["items"][0]["id"]
+        await ctx.send(f"App ID for game {app_name}: {app_id}")
+    else:
+        raise Exception("Failed to fetch user summary.")
 
 if __name__ == "__main__":
     bot.run()
