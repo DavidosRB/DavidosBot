@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from random import choice, randint
 from playsound import playsound
 import asyncio
-import signal
-from sys import exit as sys_exit
+import requests
+import ast
 
 # load token etc. from .env-file
 load_dotenv()
@@ -25,7 +25,7 @@ async def event_ready():
     """Called once when the bot goes online."""
     # Ensure bot is connected before sending messages
     if bot.connected_channels:
-        await bot.connected_channels[0].send(content="/me is gerade gelandet! Sagt Hallo :3")
+        await bot.connected_channels[0].send(content="/me ist gerade gelandet! Sagt Hallo :3")
     else:
         print("Bot is not connected to any channel yet!")
 
@@ -45,13 +45,13 @@ async def event_message(ctx):
     # If the chat message contains "ich bin ", respond with a silly message referencing to them by the next word
     if "ich bin " in chat_message:
         # First, split the message into words
-        split_words: list[str] = chat_message.split()
+        split_words: list[str] = ctx.content.split()
         # Then, get the index of the first occurrence of (ich) "bin"
         index: int = split_words.index("bin")
         # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
         next_word: str = split_words[index+1]
 
-        await ctx.channel.send(f'Hi {next_word.capitalize()}, ich bin DavidosBot! :3')
+        await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
@@ -87,6 +87,7 @@ async def play_sound(ctx, sound: str = "Nichts"):
         return
     if sound == "Nichts":
         await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
+        return
     # Convert the given sound to lower case to avoid case sensitivity
     sound = sound.lower()
     # Convert the sound to a file path using os and the sounds folder
@@ -145,9 +146,14 @@ async def henry(ctx):
 
 @bot.command(name='byebye')
 async def byebye(ctx):
-    # Check if the user is a Mod (Allow only Mods to play sounds for now)
-    if not ctx.author.is_mod:
-        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+    ## Check if the user is a Mod (Allow only Mods to play sounds for now)
+    # if not ctx.author.is_mod:
+    #     await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+    #     return
+
+    # Check if the user is the channel owner or myself (to prevent misuse)
+    if not ctx.author.name.lower() == [os.environ['CHANNEL']][0].lower() and ctx.author.name.lower() != 'davidosb':
+        await ctx.send(f"Sorry {ctx.author.name}, only the channel owner can use this command.")
         return
     # Send a goodbye message to the twitch chat and disconnect
     await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
@@ -160,6 +166,67 @@ async def byebye(ctx):
     # Stop the event loop cleanly
     loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
     loop.stop()
+
+@bot.command(name='getachievements')
+async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "None"):
+    # Check if either the steam_id or the appid is None, if so, send a message to the chat
+    if steam_id == "None" or appid == "None":
+        await ctx.send('Korrekte Command-Benutzung: ?getachievements <steam_id> <appid>')
+        return
+    # Check if the given steam_id is an actual ID (integer)
+    if not isinstance(steam_id, int) and steam_id != "None":
+        # Check the known users dictionary for the given username
+        known_users: dict = ast.literal_eval(os.environ["KNOWN_USERS"])
+        if steam_id.lower() in known_users.keys():
+            steam_id = known_users[steam_id.lower()]
+            # await ctx.send(f"User {steam_id} wurde gefunden.")
+        else:
+            await ctx.send(f"User {steam_id} wurde nicht gefunden.")
+            return
+    # Also check if the given appid is an actual ID (integer)
+    if not isinstance(appid, int) and appid != "None":
+        # Check the known games dictionary for the given game name
+        known_games: dict = ast.literal_eval(os.environ["KNOWN_GAMES"])
+        if appid.lower() in known_games.keys():
+            appid = known_games[appid.lower()]
+            # await ctx.send(f"Game {appid} wurde gefunden.")
+        else:
+            await ctx.send(f"Game {appid} wurde nicht gefunden. Verfügbare Games: {', '.join(known_games.keys())}")
+            return
+    # Get user stats from Steam API using the GetPlayerAchievements API from ISteamUserStats
+    url = f"http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/"
+    params = {
+        "appid": appid,
+        "key": os.environ['STEAM_API_KEY'],
+        "steamid": steam_id,
+    }
+    # Send the request to the steam API
+    response: requests.Response = requests.get(url, params=params)
+    achievement_data = response.json()
+    achievements_gotten = 0
+    achievements_missing = 0
+    achievements = achievement_data["playerstats"]["achievements"]
+    for achievement in achievements:
+        if achievement["achieved"] == 1:
+            achievements_gotten += 1
+        else:
+            achievements_missing += 1
+    # Get the users name using the GetPlayerSummaries API from ISteamUser
+    url: str = f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
+    params: dict[str, str] = {
+        "key": os.environ['STEAM_API_KEY'],
+        "steamids": os.environ['STEAM_ID'],
+    }
+    response: requests.Response = requests.get(url=url, params=params)
+    if response.status_code == 200:
+        user_data = response.json()
+        # Get the user's name
+        user_name = user_data["response"]["players"][0]["personaname"]
+    else:
+        # print("Returning None")
+        await ctx.send("Failed to fetch user summary.")
+
+    await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
 
 if __name__ == "__main__":
     bot.run()
