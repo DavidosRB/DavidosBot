@@ -25,7 +25,7 @@ async def event_ready():
     """Called once when the bot goes online."""
     # Ensure bot is connected before sending messages
     if bot.connected_channels:
-        await bot.connected_channels[0].send(content="/me is gerade gelandet! Sagt Hallo :3")
+        await bot.connected_channels[0].send(content="/me ist gerade gelandet! Sagt Hallo :3")
     else:
         print("Bot is not connected to any channel yet!")
 
@@ -45,13 +45,13 @@ async def event_message(ctx):
     # If the chat message contains "ich bin ", respond with a silly message referencing to them by the next word
     if "ich bin " in chat_message:
         # First, split the message into words
-        split_words: list[str] = chat_message.split()
+        split_words: list[str] = ctx.content.split()
         # Then, get the index of the first occurrence of (ich) "bin"
         index: int = split_words.index("bin")
         # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
         next_word: str = split_words[index+1]
 
-        await ctx.channel.send(f'Hi {next_word.capitalize()}, ich bin DavidosBot! :3')
+        await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
@@ -87,6 +87,7 @@ async def play_sound(ctx, sound: str = "Nichts"):
         return
     if sound == "Nichts":
         await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
+        return
     # Convert the given sound to lower case to avoid case sensitivity
     sound = sound.lower()
     # Convert the sound to a file path using os and the sounds folder
@@ -145,9 +146,14 @@ async def henry(ctx):
 
 @bot.command(name='byebye')
 async def byebye(ctx):
-    # Check if the user is a Mod (Allow only Mods to play sounds for now)
-    if not ctx.author.is_mod:
-        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+    ## Check if the user is a Mod (Allow only Mods to play sounds for now)
+    # if not ctx.author.is_mod:
+    #     await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+    #     return
+
+    # Check if the user is the channel owner (to prevent misuse)
+    if not ctx.author.name.lower() == [os.environ['CHANNEL']][0].lower():
+        await ctx.send(f"Sorry {ctx.author.name}, only the channel owner can use this command.")
         return
     # Send a goodbye message to the twitch chat and disconnect
     await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
