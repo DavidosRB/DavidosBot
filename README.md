@@ -25,7 +25,9 @@ Generiert eine zufällige Nummer zwischen 0 und dem gegebenen Maximum und schick
 - `?byebye`
 Ein Command, um den Bot sauber und einfach aus dem Chat zu entfernen und das lokale Skript zu stoppen. Nie wieder mit Ctrl+C forcefully stoppen!
 - `?getachievements <steam_id> <app_id>`
-Zeige die erhaltenen/nicht erhaltenen Achievements eines Users (per Steam ID) in einem spezifischen Spiel (per App ID) an. Anstelle von Steam IDs oder App IDs (Zahlenfolgen) sind auch einige Namen in Ordnung. So z.B. "DavidosB", "0xLia" oder "BaalWasTaken" als Steam ID oder "Terraria", "Hollow Knight" und "Stardew Valley" als Spiele.
+Zeige die erhaltenen/nicht erhaltenen Achievements eines Users (per Steam ID) in einem spezifischen Spiel (per App ID) an. Anstelle von Steam IDs oder App IDs (Zahlenfolgen) sind auch einige Namen in Ordnung. So z.B. "DavidosB", "0xLia" oder "BaalWasTaken" als Steam ID oder "Terraria", "Hollow Knight" und "Stardew Valley" als Spiele. Außerdem versucht der Bot automatisch, sich die Steam App ID selbst zu holen bei Spielenamen, die er nicht kennt. 
+- `?getappid <game_name>`
+Obwohl diese Funktion auch automatisch in `?getachievements` enthalten ist, kann man mit diesen Befehl auch ganz separat die Steam ID eines spezifischen Spiels mithilfe einer Steam-Store-Anfrage erhalten.
 
 Und ein paar geheime Funktionen & hoffentlich bald mehr! Ich geh gerne wild mit den commands hehe :3
 
