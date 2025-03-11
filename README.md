@@ -16,11 +16,11 @@ Wählt einen von 10 Planeten und antworten mit einem kurzen Text über einen ima
 Zeigt eine kurze Info über den Bot an
 - `?commands`
 Zeigt eine Liste an Commands und verlinkt zu diesem README (momentan noch hard-coded)
-- `?playsound (sound)`
+- `?playsound <sound>`
 Spielt einen Sound für die Person ab, die den Bot gestartet hat (auf der lokalen Maschine). Momentan nur verfügbar für Mods. Verfügbare Sounds sieht man entweder im [Sounds Ordner](sounds/) oder via dem Command `?sounds`
 - `?sounds`
 Schreibt eine Auflistung an allen verfügbaren Sounds in den Chat, basierend auf allen Sounds im [Sounds Ordner](sounds/)
-- `?randompoints (user) (maximum)`
+- `?randompoints <user> <maximum>`
 Generiert eine zufällige Nummer zwischen 0 und dem gegebenen Maximum und schickt einen Command an StreamElements, um dem User die zufällig gewürfelte Zahl als Loyalty Points hinzufügt
 - `?byebye`
 Ein Command, um den Bot sauber und einfach aus dem Chat zu entfernen und das lokale Skript zu stoppen. Nie wieder mit Ctrl+C forcefully stoppen!
@@ -39,7 +39,7 @@ Außerdem benötigt der Bot seinen eigenen Twitch Account und es kann gut sein, 
 Der Bot selbst kann folgendermaßen "installiert" und ausgeführt werden:
 
 1. Wie [unten](#token-und-client_id-generieren) beschrieben, Client ID und OAuth Key besorgen
-2. Clone das Repository in deine lokale Maschine! Mit `git clone https://github.com/David-R-Buchmann/DavidosBot.git` in eurem Zielorder.
+2. Clone das Repository in deine lokale Maschine! Mit `git clone https://github.com/DavidosRB/DavidosBot.git` in eurem Zielorder.
 3. (Installiert PDM) und führt `pdm install` aus. Dies installiert euch automtisch alle nötigen Libraries und Dependencies, um den Bot selbst zum Laufen zu kriegen.
 4. Erstellt euer eigenes .env file, am Besten wie [unten](#das-env-file) beschrieben, mithilfe des `.env` files im GitHub Repository (habt ihr mitgeclonet)
    1. Gebt hier eure ClientID und OAuth Key von Schritt 1 an
