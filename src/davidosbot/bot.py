@@ -62,7 +62,7 @@ async def test(ctx):
     await ctx.send('Test passed! Der Bot funktioniert einwandfrei :3')
 
 # Rainbow Cat Command, redeemed/suggested by Schnitzel_HD84
-@bot.command(name='rnbcat')
+@bot.command(name='rnbcat', aliases=["rainbowcat"])
 async def rnbcat(ctx):
     planeten: list[str] = ["1. Erde: Es scheint, als hätte dich die Rainbow Cat heute nicht mit in den weiten Kosmos genommen, vielleicht gibt sie dir aber einen Kaffee aus, wer weiß!",
                             "2. Mars: Staub, Sand und Stein - klingt nach der Definition von Langeweile, aber wenn du Glück hast, zeigt dir die Rainbow Cat die geheime Zivilisation der Marsianer. Was? Hast du gedacht, du verlässt dieses Ödland, ohne mal auf dem Klo eines Außerirdischen gesessen zu haben?",
@@ -78,11 +78,11 @@ async def help(ctx):
     await ctx.send('DavidosBot ist ein kleiner aber feiner, manuell kreierter und gestarteter ChatBot für Custom Commands (siehe ?commands). Gebt Bescheid, wenn ihr mehr Commands sehen wollt! Erstellt von DavidosB, am 07.03.2025')
 
 # List all currently available commands (hardcoded)
-@bot.command(name='commands')
+@bot.command(name='commands', aliases=["cmds"])
 async def commands(ctx):
     await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements und ein paar secret commands hehe')
 
-@bot.command(name='playsound')
+@bot.command(name='playsound', aliases=["playsounds", "plysnd"])
 async def play_sound(ctx, sound: str = "Nichts"):
     global sounds_playable
     # Check if sounds can be played right now
@@ -128,7 +128,7 @@ async def toggle_sound(ctx):
         await ctx.send(f'Sounds sind jetzt nicht mehr abspielbar. Sorry Leute :(')
 
 
-@bot.command(name='sounds')
+@bot.command(name='sounds', aliases=["showsounds", "getsounds", "allsounds", "snds"])
 async def list_sounds(ctx):
     # Return a list of sounds by listing all files in the sounds folder
     sounds: list[str] = os.listdir(path='sounds')
@@ -137,7 +137,7 @@ async def list_sounds(ctx):
     # Send the list of sounds to the chat
     await ctx.send(f'Verfügbare Sounds: {", ".join(sounds)}')
 
-@bot.command(name='randompoints')
+@bot.command(name='randompoints', aliases=["rndmpnts"])
 async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
     if not ctx.author.is_mod:
@@ -159,7 +159,7 @@ async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
     await ctx.send(f'!addpoints {user} {points}')
 
 # Secret Command, um Henry mit Quote 7 zu nerven
-@bot.command(name='henry')
+@bot.command(name='henry', aliases=["mobbing", "baalwastaken"])
 async def henry(ctx):
     # If the current channel is 0xLia, send the quotes command to get quote 7 from StreamElements
     if [os.environ['CHANNEL']][0].lower() == '0xlia':
@@ -168,7 +168,7 @@ async def henry(ctx):
     else: 
         await ctx.send('#7: "An sich sind wir schon Pro-Mobbing in unserem Chat" ~Henry, 14.02.2025')
 
-@bot.command(name='byebye')
+@bot.command(name='byebye', aliases=["disconnect"])
 async def byebye(ctx):
     ## Check if the user is a Mod (Allow only Mods to play sounds for now)
     # if not ctx.author.is_mod:
@@ -191,7 +191,7 @@ async def byebye(ctx):
     loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
     loop.stop()
 
-@bot.command(name='getachievements')
+@bot.command(name='getachievements', aliases=["achievements"])
 async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "None"):
     # Check if either the steam_id or the appid is None, if so, send a message to the chat
     if steam_id == "None" or appid == "None":
