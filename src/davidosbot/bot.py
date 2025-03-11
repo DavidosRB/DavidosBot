@@ -18,7 +18,7 @@ bot = commands.Bot(
     prefix=os.environ['BOT_PREFIX'],
     initial_channels=[os.environ['CHANNEL']]
 )
-
+    
 # Set Sounds to be playable (via ?playsounds)
 sounds_playable: bool = True
 
@@ -213,9 +213,8 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
         game_name: list = " ".join(ctx.message.content.split()[2:])
         # Check the known games dictionary for the given game name
         known_games: dict = ast.literal_eval(os.environ["KNOWN_GAMES"])
-        if appid.lower() in known_games.keys():
-            appid = known_games[appid.lower()]
-
+        if game_name.lower() in known_games.keys():
+            appid = known_games[game_name.lower()]
         # If the given game name cannot be found in the known games, we query the steam store instead
         else:
             # Get the URL to the steam store and set the term as the given game name (with cc as US and language as english)
