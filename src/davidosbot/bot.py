@@ -82,9 +82,9 @@ async def commands(ctx):
 @bot.command(name='playsound')
 async def play_sound(ctx, sound: str = "Nichts"):
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
-    # if not ctx.author.is_mod:
-    #     await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
-    #     return
+    if not ctx.author.is_mod:
+        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+        return
     if sound == "Nichts":
         await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
         return
@@ -130,7 +130,7 @@ async def random_waffeln(ctx, user: str = "davidosbot", maximum: int = 100):
     # Generate a random number of points between 0 and the given maximum
     points = randint(a=0, b=maximum)
     # Notify the chat about the random number of Reiswaffeln
-    await ctx.send(f'{user} erhält eine zufällige Anzahl an Punkten zwischen 0 und {maximum}. Folgende Zahl wurde zufällig gerollt: {points}')
+    # await ctx.send(f'{user} erhält eine zufällige Anzahl an Punkten zwischen 0 und {maximum}. Folgende Zahl wurde zufällig gerollt: {points}')
     # Send the StreamElements command to give the user the random number of Reiswaffeln
     await ctx.send(f'!addpoints {user} {points}')
 
@@ -233,6 +233,7 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     # If this leads to an error, notify the user that the given game seems to not have any achievements
     except:
         await ctx.send(f"Das Spiel {app_name} scheint keine Achievements zu haben.")
+        return
 
     # If achievements could be found, iterate over every achievement and count it as gotten if it has been achieved ("achieved": 1) and as missing if it hasn't
     achievements_gotten = 0
@@ -247,7 +248,7 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     url: str = f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
     params: dict[str, str] = {
         "key": os.environ['STEAM_API_KEY'],
-        "steamids": os.environ['STEAM_ID'],
+        "steamids": steam_id,
     }
     response: requests.Response = requests.get(url=url, params=params)
     # If the user can be found, get his name by accessing the response, first found player and their Persona Name
