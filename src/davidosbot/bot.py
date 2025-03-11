@@ -19,6 +19,9 @@ bot = commands.Bot(
     initial_channels=[os.environ['CHANNEL']]
 )
 
+# Set Sounds to be playable (via ?playsounds)
+sounds_playable: bool = True
+
 # Notify when bot is connected
 @bot.event()
 async def event_ready():
@@ -81,9 +84,14 @@ async def commands(ctx):
 
 @bot.command(name='playsound')
 async def play_sound(ctx, sound: str = "Nichts"):
+    global sounds_playable
+    # Check if sounds can be played right now
+    if not sounds_playable:
+        await ctx.send(f"Sorry {ctx.author.name}, Sounds sind grade ausgeschaltet.")
+        return
     # Check if the user is a Mod (Allow only Mods to play sounds for now)
     if not ctx.author.is_mod:
-        await ctx.send(f"Sorry {ctx.author.name}, only Mods can use this command.")
+        await ctx.send(f"Sorry {ctx.author.name}, nur Mods können diesen command benutzen.")
         return
     if sound == "Nichts":
         await ctx.send(f'Bitte gib einen Sound an, der abgespielt werden soll. Nutze ?sounds für eine Liste der verfügbaren Sounds.')
@@ -103,6 +111,22 @@ async def play_sound(ctx, sound: str = "Nichts"):
 
     # Also notify the chat that the sound is playing/was played
     await ctx.send(f'Sound {sound} wurde abgespielt.')
+
+@bot.command(name='togglesound', aliases=["togglesounds", "toggleplaysound"])
+async def toggle_sound(ctx):
+    # Check if the user is a Mod (Allow only Mods to play sounds for now)
+    if not ctx.author.is_mod:
+        await ctx.send(f"Sorry {ctx.author.name}, nur Mods können diesen command benutzen.")
+        return
+    # Switch global variable sounds_playable from True to False or False to True
+    global sounds_playable
+    sounds_playable = not sounds_playable
+    # Send a message to the chat depending on whether it has been switched on or off
+    if sounds_playable:
+        await ctx.send(f'Sounds sind nun wieder abspielbar. Probier ?playsound und ?sounds mal aus!')
+    else:
+        await ctx.send(f'Sounds sind jetzt nicht mehr abspielbar. Sorry Leute :(')
+
 
 @bot.command(name='sounds')
 async def list_sounds(ctx):
