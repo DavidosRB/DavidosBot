@@ -6,6 +6,7 @@ from playsound import playsound
 import asyncio
 import requests
 import ast
+import string
 
 # load token etc. from .env-file
 load_dotenv()
@@ -52,7 +53,7 @@ async def event_message(ctx):
         # Then, get the index of the first occurrence of (ich) "bin"
         index: int = split_words.index("bin")
         # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
-        next_word: str = split_words[index+1]
+        next_word: str = split_words[index+1].strip(string.punctuation)  # Remove punctuation
 
         await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
 
@@ -67,7 +68,9 @@ async def rnbcat(ctx):
     planeten: list[str] = ["1. Erde: Es scheint, als hätte dich die Rainbow Cat heute nicht mit in den weiten Kosmos genommen, vielleicht gibt sie dir aber einen Kaffee aus, wer weiß!",
                             "2. Mars: Staub, Sand und Stein - klingt nach der Definition von Langeweile, aber wenn du Glück hast, zeigt dir die Rainbow Cat die geheime Zivilisation der Marsianer. Was? Hast du gedacht, du verlässt dieses Ödland, ohne mal auf dem Klo eines Außerirdischen gesessen zu haben?",
                             "3. Neptun: Man sagt, der Weihnachtsmann lebe auf dem Nordpol, tja die Rainbow Cat weiß es besser, sie zeigt dir das Raumschiff des Feiertags-Helden, wenn du über genug Güte und Jacken verfügst... Wie, du glaubst nicht an den Weihnachtsmann? Keine Sorge, spätestens wenn er neue Kohle aus der Sonne holt, wirst du ihn kennenlernen...",
-                            "4. Jupiter: An jeden Adrenalin-Süchtigen: Willkommen auf Jupiter! Dein erster und letzter Fallschirmsprung, aber keine Sorge, dein Fallschirm ist nicht Defekt. Rainbow Cat wusste nur, wie sehr du es magst, wenn dein Herz fast aus deiner Brust springt, ein permanentes Gewitter mit BLITZEN und DONNER sorgen für den atmosphärischen touch. Rainbow Airlines hofft, dass es dir (ge)fallen wird!"]
+                            "4. Jupiter: An jeden Adrenalin-Süchtigen: Willkommen auf Jupiter! Dein erster und letzter Fallschirmsprung, aber keine Sorge, dein Fallschirm ist nicht Defekt. Rainbow Cat wusste nur, wie sehr du es magst, wenn dein Herz fast aus deiner Brust springt, ein permanentes Gewitter mit BLITZEN und DONNER sorgen für den atmosphärischen touch. Rainbow Airlines hofft, dass es dir (ge)fallen wird!",
+                            "5. Saturn: Sind Ringe nicht ein Sinnbild für die ewige Liebe zwischen zwei Menschen? Nun, auf dem Saturn läuft das anders. Er ist ein geheimes Gefängnis für außerirdische Verbrecher. Die Ringe sind getarnte Wachdrohnen, die kontinuierlich Farbstoff ausschütten, um die Illusion von einem friedlichen Ring zu erzeugen. Wenn die Rainbow Cat dich wirklich dort hinbringt, hast du wohl Schlimmeres getan als Katzen ihre Milch gestohlen...",
+                            "6. Merkur: Der Planet, der der Sonne am nächsten ist, klingt nach einem Paradies für jeden Tropen-Liebhaber, jedoch will dir die Rainbow Cat keinen gratis Aufenthalt im wohl größten Solarium unseres Sternensektors zeigen, sondern sie will dich lediglich testen. Wie lange wirst du wohl einen 196 Erdtage langen Merkur-Tag durchhalten, ohne ein Teil der Steinlandschaft zu werden? Was? Rainbow cat zeigt den Leuten einfach gerne die Sonnenseite des Lebens gerne auch für die Ewigkeit."]
 
     planet: str = choice(seq=planeten)
     await ctx.send(planet)
