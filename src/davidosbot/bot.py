@@ -23,13 +23,19 @@ bot = commands.Bot(
 # Set Sounds to be playable (via ?playsounds)
 sounds_playable: bool = True
 
+# Get the desired language from the environment
+language = os.environ['LANGUAGE']
+
 # Notify when bot is connected
 @bot.event()
 async def event_ready():
     """Called once when the bot goes online."""
     # Ensure bot is connected before sending messages
     if bot.connected_channels:
-        await bot.connected_channels[0].send(content="/me ist gerade gelandet! Sagt Hallo :3")
+        if language == "en":
+            await bot.connected_channels[0].send(content="/me just landed! Say Hello :3")
+        else:
+            await bot.connected_channels[0].send(content="/me ist gerade gelandet! Sagt Hallo :3")
     else:
         print("Bot is not connected to any channel yet!")
 
@@ -56,15 +62,30 @@ async def event_message(ctx):
         next_word: str = split_words[index+1].strip(string.punctuation)  # Remove punctuation
 
         await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
+    elif "i am " in chat_message:
+        split_words: list[str] = ctx.content.split()
+        index: int = split_words.index("bin")
+        next_word: str = split_words[index+1].strip(string.punctuation) 
+        await ctx.channel.send(f'Hi {next_word}, I am DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
 async def test(ctx):
-    await ctx.send('Test passed! Der Bot funktioniert einwandfrei :3')
+    if language == "en":
+        await ctx.send('Test passed! The bot is working perfectly :3')
+    else:
+        await ctx.send('Test passed! Der Bot funktioniert einwandfrei :3')
 
 # Rainbow Cat Command, redeemed/suggested by Schnitzel_HD84
 @bot.command(name='rnbcat', aliases=["rainbowcat"])
 async def rnbcat(ctx):
+    # Only send something if it's in 0xLia's channel
+    if [os.environ['CHANNEL']][0].lower() != '0xlia':
+        if language == "en":
+            await ctx.send("Only works in 0xLia's channel, sorry :P")
+        else:
+            await ctx.send("Funktioniert nur in 0xLia's chat, sorry :P")
+        return
     planeten: list[str] = ["1. Erde: Es scheint, als hätte dich die Rainbow Cat heute nicht mit in den weiten Kosmos genommen, vielleicht gibt sie dir aber einen Kaffee aus, wer weiß!",
                             "2. Mars: Staub, Sand und Stein - klingt nach der Definition von Langeweile, aber wenn du Glück hast, zeigt dir die Rainbow Cat die geheime Zivilisation der Marsianer. Was? Hast du gedacht, du verlässt dieses Ödland, ohne mal auf dem Klo eines Außerirdischen gesessen zu haben?",
                             "3. Neptun: Man sagt, der Weihnachtsmann lebe auf dem Nordpol, tja die Rainbow Cat weiß es besser, sie zeigt dir das Raumschiff des Feiertags-Helden, wenn du über genug Güte und Jacken verfügst... Wie, du glaubst nicht an den Weihnachtsmann? Keine Sorge, spätestens wenn er neue Kohle aus der Sonne holt, wirst du ihn kennenlernen...",
@@ -80,10 +101,22 @@ async def rnbcat(ctx):
 async def help(ctx):
     await ctx.send('DavidosBot ist ein kleiner aber feiner, manuell kreierter und gestarteter ChatBot für Custom Commands (siehe ?commands). Gebt Bescheid, wenn ihr mehr Commands sehen wollt! Erstellt von DavidosB, am 07.03.2025')
 
+# Link to the GitHub
+@bot.command(name='github')
+async def github(ctx):
+    if language == "en":
+        await ctx.send('See the GitHub for the list of commands, some instructions and the source code here: https://github.com/DavidosRB/DavidosBot')
+    else:
+        await ctx.send("Hier kommst du zum GitHub für eine Liste an Commands, einige Anleitungen und den Source code: https://github.com/DavidosRB/DavidosBot")
+
+
 # List all currently available commands (hardcoded)
 @bot.command(name='commands', aliases=["cmds"])
 async def commands(ctx):
-    await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements und ein paar secret commands hehe')
+    if language == "en":
+        await ctx.send('The currently available commands are: ?test, ?help, ?github, ?commands, ?getachievements and a few secret commands hehe >:3')
+    else:
+        await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements und ein paar secret commands hehe >:3')
 
 @bot.command(name='playsound', aliases=["playsounds", "plysnd"])
 async def play_sound(ctx, sound: str = "Nichts"):
@@ -183,7 +216,10 @@ async def byebye(ctx):
         await ctx.send(f"Sorry {ctx.author.name}, only the channel owner can use this command.")
         return
     # Send a goodbye message to the twitch chat and disconnect
-    await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
+    if language == "en":
+        await ctx.send('/me says goodbye. See ya! :3')
+    else:
+        await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
     await ctx.send('/disconnect')
     # Small delay to ensure message is sent before disconnecting (and to prevent runtime errors)
     await asyncio.sleep(delay=1)  
@@ -194,11 +230,26 @@ async def byebye(ctx):
     loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
     loop.stop()
 
+# Secret Command für Mel's Gooner Chat
+@bot.command(name='goon')
+async def goon(ctx):
+    # If the current channel is melxfrost, send a goon knight quote
+    if [os.environ['CHANNEL']][0].lower() == 'melxfrost':
+        await ctx.send('THE GOON HAUNTS YOU!! melxfrJail')
+    else:
+        if language == "en":
+            await ctx.send("I am only allowed to goon in melxfrost's Chat.")
+        else:
+            await ctx.send("Ich darf leider nur melxfrost's Chat goonen.")
+
 @bot.command(name='getachievements', aliases=["achievements"])
 async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "None"):
     # Check if either the steam_id or the appid is None, if so, send a message to the chat
     if steam_id == "None" or appid == "None":
-        await ctx.send('Korrekte Command-Benutzung: ?getachievements <steam_id> <appid>')
+        if language == "en":
+            await ctx.send("Correct usage: ?getachievements <steam_id> <appid>")
+        else:
+            await ctx.send('Korrekte Command-Benutzung: ?getachievements <steam_id> <appid>')
         return
     # Check if the given steam_id is an actual ID (integer)
     if not isinstance(steam_id, int) and steam_id != "None":
@@ -208,12 +259,15 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
             steam_id = known_users[steam_id.lower()]
             # await ctx.send(f"User {steam_id} wurde gefunden.")
         else:
-            await ctx.send(f"User {steam_id} wurde nicht gefunden.")
+            if language == "en":
+                await ctx.send(f"User {steam_id} was not found.")
+            else:
+                await ctx.send(f"User {steam_id} wurde nicht gefunden.")
             return
     # Also check if the given appid is an actual ID (integer)
     if not isinstance(appid, int) and appid != "None":
         # First, get the full game name by manipulating the message string to get everything from the third word onwards (after "?getachievements <steam_id>")
-        game_name: list = " ".join(ctx.message.content.split()[2:])
+        game_name: str = " ".join(ctx.message.content.split()[2:])
         # Check the known games dictionary for the given game name
         known_games: dict = ast.literal_eval(os.environ["KNOWN_GAMES"])
         if game_name.lower() in known_games.keys():
@@ -234,7 +288,10 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
                 try:
                     best_match = data["items"][0]
                 except:
-                    await ctx.send(f"Konnte kein Spiel mit dem Namen {game_name} finden.")
+                    if language == "en":
+                        await ctx.send(f"Could not find a game with the name {game_name}.")
+                    else:
+                        await ctx.send(f"Konnte kein Spiel mit dem Namen {game_name} finden.")
                     raise Exception(f"Couldn't find any game using the search term {game_name}.")
                 app_name: str = best_match["name"]
                 appid: int = best_match["id"] # Using this appid, we can now query the achievements below
@@ -272,7 +329,7 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     
     # Get the users name using the GetPlayerSummaries API from ISteamUser
     url: str = f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
-    params: dict[str, str] = {
+    params: dict = {
         "key": os.environ['STEAM_API_KEY'],
         "steamids": steam_id,
     }
@@ -288,7 +345,10 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
         return
 
     # If everything succeeds, send a message to the chat for the amount of achievements the given user has achieved for the given game
-    await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} bisher {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
+    if language == "en":
+        await ctx.send(f"User {user_name} has achieved {achievements_gotten} out of {achievements_gotten+achievements_missing} achievements in {achievement_data['playerstats']['gameName']} so far")
+    else:
+        await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} bisher {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
 
 # A separate command from getachievements to get only an App ID (completely optional and only used in getachievements so far)
 @bot.command(name='getappid')
@@ -314,6 +374,13 @@ async def get_appid(ctx):
         await ctx.send(f"App ID for game {app_name}: {app_id}")
     else:
         raise Exception("Failed to fetch user summary.")
+    
+@bot.command(name='shoutout')
+async def shoutout(ctx):
+    full_message = ctx.message.content
+    name = full_message[1]
+
+    await ctx.send(f"/shoutout {name}")
 
 if __name__ == "__main__":
     bot.run()
