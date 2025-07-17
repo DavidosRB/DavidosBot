@@ -41,7 +41,7 @@ Der Bot selbst kann folgendermaßen "installiert" und ausgeführt werden:
 1. Wie [unten](#token-und-client_id-generieren) beschrieben, Client ID und OAuth Key besorgen
 2. Clone das Repository in deine lokale Maschine! Mit `git clone https://github.com/DavidosRB/DavidosBot.git` in eurem Zielorder.
 3. (Installiert PDM) und führt `pdm install` aus. Dies installiert euch automtisch alle nötigen Libraries und Dependencies, um den Bot selbst zum Laufen zu kriegen.
-4. Erstellt euer eigenes .env file, am Besten wie [unten](#das-env-file) beschrieben, mithilfe des `.env` files im GitHub Repository (habt ihr mitgeclonet)
+4. Erstellt euer eigenes .env file, am Besten wie [unten](#das-env-file) beschrieben, mithilfe des `.env` files im GitHub Repository (Ein `.env_template` habt ihr mitgeclonet, das ist ein Template, wie euer `.env` file am Ende aussehen soll)
    1. Gebt hier eure ClientID und OAuth Key von Schritt 1 an
    2. Gebt außerdem euren Channel an, damit der Bot weiß, wo er hinmuss!
    3. (Optional) könnt ihr natürlich auch das Botkürzel (standardmäßig "?")  mit `BOT_PREFIX` ändern. Go wild!
@@ -59,7 +59,7 @@ BOT_PREFIX = "[DAS COMMAND PREFIX (hier ?)]"
 CHANNEL = "[DER CHANNEL, IN DEM DER BOT AGIEREN SOLL]"
 ```
 
-`BOT_NICK`, `BOT_PREFIX` und `CHANNEL` kann jeder natürlich manuell und easy setzen, wie er will. An `TOKEN` und `CLIENT_ID` kam ich folgendermaßen:
+`BOT_PREFIX` und `CHANNEL` kann jeder natürlich manuell und easy setzen, wie er will. BOT_NICK` An `TOKEN` und `CLIENT_ID` kam ich folgendermaßen:
 
 #### TOKEN und CLIENT_ID generieren
 Der Token hier ist ein OAuth Token und ist quasi ein "Password", das Zugriff zum Bot-Account gibt. Der Bot benötigt diesen Token, um zum Twitch Chat zu verbinden und fängt immer mit "oauth:" an. 
