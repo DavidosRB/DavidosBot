@@ -64,7 +64,7 @@ async def event_message(ctx):
         await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
     elif "i am " in chat_message:
         split_words: list[str] = ctx.content.split()
-        index: int = split_words.index("bin")
+        index: int = split_words.index("am")
         next_word: str = split_words[index+1].strip(string.punctuation) 
         await ctx.channel.send(f'Hi {next_word}, I am DavidosBot! :3')
 
@@ -276,7 +276,7 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
         else:
             # Get the URL to the steam store and set the term as the given game name (with cc as US and language as english)
             url: str = f"https://store.steampowered.com/api/storesearch/&cc=US&l=en"
-            params: dict[str, str] = {
+            params: dict = {
                 "term": game_name,
                 "cc": "US",
                 "l": "en"
@@ -360,7 +360,7 @@ async def get_appid(ctx):
     game_name = " ".join(game_name)
     # Then, query the steam story using this game's name as term
     url: str = f"https://store.steampowered.com/api/storesearch/&cc=US&l=en"
-    params: dict[str, str] = {
+    params: dict = {
         "term": game_name,
         "cc": "US",
         "l": "en"
