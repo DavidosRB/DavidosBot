@@ -34,6 +34,8 @@ async def event_ready():
     if bot.connected_channels:
         if language == "en":
             await bot.connected_channels[0].send(content="/me just landed! Say Hello :3")
+        elif language == "nl":
+            await bot.connected_channels[0].send(content="/me is net geland! Zeg hallo :3")
         else:
             await bot.connected_channels[0].send(content="/me ist gerade gelandet! Sagt Hallo :3")
     else:
@@ -60,19 +62,29 @@ async def event_message(ctx):
         index: int = split_words.index("bin")
         # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
         next_word: str = split_words[index+1].strip(string.punctuation)  # Remove punctuation
-
+        # Also replace underscores with spaces
+        next_word = next_word.replace("_", " ")
         await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
     elif "i am " in chat_message:
         split_words: list[str] = ctx.content.split()
         index: int = split_words.index("am")
         next_word: str = split_words[index+1].strip(string.punctuation) 
+        next_word = next_word.replace("_", " ")
         await ctx.channel.send(f'Hi {next_word}, I am DavidosBot! :3')
+    elif "ik ben " in chat_message:
+        split_words: list[str] = ctx.content.split()
+        index: int = split_words.index("ben")
+        next_word: str = split_words[index+1].strip(string.punctuation) 
+        next_word = next_word.replace("_", " ")
+        await ctx.channel.send(f'Hi {next_word}, ik ben DavidosBot! :3')
 
 # Test command to see if the bot works
 @bot.command(name='test')
 async def test(ctx):
     if language == "en":
         await ctx.send('Test passed! The bot is working perfectly :3')
+    elif language == "nl":
+        await ctx.send('Test passed! De bot werkt perfect :3')
     else:
         await ctx.send('Test passed! Der Bot funktioniert einwandfrei :3')
 
@@ -83,6 +95,8 @@ async def rnbcat(ctx):
     if [os.environ['CHANNEL']][0].lower() != '0xlia':
         if language == "en":
             await ctx.send("Only works in 0xLia's channel, sorry :P")
+        elif language == "nl":
+            await ctx.send("Werkt alleen in de chat van 0xLia, sorry :P")
         else:
             await ctx.send("Funktioniert nur in 0xLia's chat, sorry :P")
         return
@@ -99,13 +113,20 @@ async def rnbcat(ctx):
 # Show a short help message/description of the Bot
 @bot.command(name='help')
 async def help(ctx):
-    await ctx.send('DavidosBot ist ein kleiner aber feiner, manuell kreierter und gestarteter ChatBot für Custom Commands (siehe ?commands). Gebt Bescheid, wenn ihr mehr Commands sehen wollt! Erstellt von DavidosB, am 07.03.2025')
+    if language == "en":
+        await ctx.send("DavidosBot is a small, but cute, manually created and started ChatBot for Custom Commands (see ?commands). Tell me (@DavidosB) about any new commands you'd like to see! Created by DavidosB, on 07.03.2025")
+    elif language == "nl":
+        await ctx.send("DavidosBot is een kleine maar perfect gevormde, handmatig ontwikkelde en gelanceerde ChatBot voor aangepaste commando's (zie ?commands). Laat het me weten als je meer commando's wilt zien! Gemaakt door DavidosB, op 7 maart 2025")
+    else:
+        await ctx.send('DavidosBot ist ein kleiner aber feiner, manuell kreierter und gestarteter ChatBot für Custom Commands (siehe ?commands). Gebt Bescheid, wenn ihr mehr Commands sehen wollt! Erstellt von DavidosB, am 07.03.2025')
 
 # Link to the GitHub
 @bot.command(name='github')
 async def github(ctx):
     if language == "en":
         await ctx.send('See the GitHub for the list of commands, some instructions and the source code here: https://github.com/DavidosRB/DavidosBot')
+    elif language == "nl":
+        await ctx.send("Hier vindt u de GitHub voor een lijst met opdrachten, enkele instructies en de Source code: https://github.com/DavidosRB/DavidosBot")
     else:
         await ctx.send("Hier kommst du zum GitHub für eine Liste an Commands, einige Anleitungen und den Source code: https://github.com/DavidosRB/DavidosBot")
 
@@ -115,6 +136,8 @@ async def github(ctx):
 async def commands(ctx):
     if language == "en":
         await ctx.send('The currently available commands are: ?test, ?help, ?github, ?commands, ?getachievements and a few secret commands hehe >:3')
+    if language == "nl":
+        await ctx.send("De momenteel beschikbare opdrachten zijn: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements en een paar geheime commando's hehe >:3")
     else:
         await ctx.send('Die aktuell verfügbaren Befehle sind: ?test, ?rnbcat, ?help, ?commands, ?playsound, ?sounds, ?randompoints, ?getachievements und ein paar secret commands hehe >:3')
 
@@ -218,6 +241,8 @@ async def byebye(ctx):
     # Send a goodbye message to the twitch chat and disconnect
     if language == "en":
         await ctx.send('/me says goodbye. See ya! :3')
+    elif language == "nl":
+        await ctx.send("/me zegt gedag. Doei, tot ziens! :3")
     else:
         await ctx.send('/me verabschiedet sich. Tschüssi, bis bald! :3')
     await ctx.send('/disconnect')
@@ -229,6 +254,10 @@ async def byebye(ctx):
     # Stop the event loop cleanly
     loop: asyncio.AbstractEventLoop = asyncio.get_running_loop()
     loop.stop()
+
+@bot.command(name='honkshuah')
+async def honkshuah(ctx):
+    await ctx.send("Sleep on that thang!")
 
 # Secret Command für Mel's Gooner Chat
 @bot.command(name='goon')
@@ -248,6 +277,8 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     if steam_id == "None" or appid == "None":
         if language == "en":
             await ctx.send("Correct usage: ?getachievements <steam_id> <appid>")
+        elif language == "nl":
+            await ctx.send("Correct commandogebruik: ?getachievements <steam_id> <appid>")
         else:
             await ctx.send('Korrekte Command-Benutzung: ?getachievements <steam_id> <appid>')
         return
@@ -261,6 +292,8 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
         else:
             if language == "en":
                 await ctx.send(f"User {steam_id} was not found.")
+            elif language == "nl":
+                await ctx.send(f"Gebruiker {steam_id} niet gevonden.")
             else:
                 await ctx.send(f"User {steam_id} wurde nicht gefunden.")
             return
@@ -290,6 +323,8 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
                 except:
                     if language == "en":
                         await ctx.send(f"Could not find a game with the name {game_name}.")
+                    elif language == "nl":
+                        await ctx.send(f"Kon geen spel vinden met de naam {game_name}.")
                     else:
                         await ctx.send(f"Konnte kein Spiel mit dem Namen {game_name} finden.")
                     raise Exception(f"Couldn't find any game using the search term {game_name}.")
@@ -347,6 +382,8 @@ async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "No
     # If everything succeeds, send a message to the chat for the amount of achievements the given user has achieved for the given game
     if language == "en":
         await ctx.send(f"User {user_name} has achieved {achievements_gotten} out of {achievements_gotten+achievements_missing} achievements in {achievement_data['playerstats']['gameName']} so far")
+    elif language == "nl":
+        await ctx.send(f"Gebruiker {user_name} heeft tot nu toe {achievements_gotten} van {achievements_gotten+achievements_missing} prestaties ontvangen in {achievement_data['playerstats']['gameName']}")
     else:
         await ctx.send(f"User {user_name} hat in {achievement_data['playerstats']['gameName']} bisher {achievements_gotten} von {achievements_gotten+achievements_missing} Achievements bekommen")
 
