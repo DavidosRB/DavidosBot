@@ -271,6 +271,10 @@ async def goon(ctx):
         else:
             await ctx.send("Ich darf leider nur melxfrost's Chat goonen.")
 
+@bot.command(name='heks')
+async def hekx(ctx):
+    await ctx.send("Wij hebben een heks!")
+
 @bot.command(name='getachievements', aliases=["achievements"])
 async def get_achievements(ctx, steam_id: int|str = "None", appid: int|str = "None"):
     # Check if either the steam_id or the appid is None, if so, send a message to the chat
