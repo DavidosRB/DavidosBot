@@ -58,8 +58,10 @@ async def event_message(ctx):
     if "ich bin " in chat_message:
         # First, split the message into words
         split_words: list[str] = ctx.content.split()
+        # Also do that for the lowercase message
+        split_lowercase = chat_message.split()
         # Then, get the index of the first occurrence of (ich) "bin"
-        index: int = split_words.index("bin")
+        index: int = split_lowercase.index("bin")
         # Finally, get the next word after "bin" (the supposed name) and respond with a message (with the silly name capitalized)
         next_word: str = split_words[index+1].strip(string.punctuation)  # Remove punctuation
         # Also replace underscores with spaces
@@ -67,16 +69,20 @@ async def event_message(ctx):
         await ctx.channel.send(f'Hi {next_word}, ich bin DavidosBot! :3')
     elif "i am " in chat_message:
         split_words: list[str] = ctx.content.split()
-        index: int = split_words.index("am")
+        split_lowercase = chat_message.split()
+        index: int = split_lowercase.index("am")
         next_word: str = split_words[index+1].strip(string.punctuation) 
         next_word = next_word.replace("_", " ")
         await ctx.channel.send(f'Hi {next_word}, I am DavidosBot! :3')
     elif "ik ben " in chat_message:
         split_words: list[str] = ctx.content.split()
-        index: int = split_words.index("ben")
+        split_lowercase = chat_message.split()
+        index: int = split_lowercase.index("ben")
         next_word: str = split_words[index+1].strip(string.punctuation) 
         next_word = next_word.replace("_", " ")
         await ctx.channel.send(f'Hi {next_word}, ik ben DavidosBot! :3')
+    elif "maar dan ben ik dood" in chat_message:
+        await ctx.channel.send("Ja dat klopt.")
 
 # Test command to see if the bot works
 @bot.command(name='test')
